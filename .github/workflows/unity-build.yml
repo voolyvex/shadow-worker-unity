@@ -1,0 +1,37 @@
+name: Unity Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build Unity Project
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+          
+      # Add Unity build steps here once project is more established
+      # For now, just validate the repository structure
+      
+      - name: Validate Project Structure
+        run: |
+          if [ -d "Assets" ]; then
+            echo "✓ Assets directory found"
+          else
+            echo "✗ Assets directory not found"
+            exit 1
+          fi
+          
+          if [ -f "ProjectSettings/ProjectSettings.asset" ]; then
+            echo "✓ Project Settings found"
+          else
+            echo "✗ Project Settings not found"
+            exit 1
+          fi 
