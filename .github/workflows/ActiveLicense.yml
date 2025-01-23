@@ -17,7 +17,7 @@ jobs:
           # Install Unity Hub using the updated repository setup
           sudo mkdir -p /etc/apt/keyrings
           curl -sS https://packages.unity.com/unityhub.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/unityhub.gpg
-          echo "deb [signed-by=/etc/apt/keyrings/unityhub.gpg] https://hub-dist.unity3d.com/artifactory/hub-debian-prod-local stable main" | sudo tee /etc/apt/sources.list.d/unityhub.list > /dev/null
+          echo "deb https://hub-dist.unity3d.com/artifactory/hub-debian-prod-local stable main" | sudo tee /etc/apt/sources.list.d/unityhub.list > /dev/null
           sudo apt update
           sudo apt install -y unityhub
           
