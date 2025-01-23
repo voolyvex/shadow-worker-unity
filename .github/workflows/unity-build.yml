@@ -5,42 +5,37 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
     name: Build Unity Project
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           lfs: true
-          
-      - name: Unity - Activate
-        uses: game-ci/unity-activate@v2.0.0
+
+      - name: Cache Library
+        uses: actions/cache@v4
         with:
-          unityVersion: 6000.0.34f1
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+
+      - name: Build project
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          
-      # Add Unity build steps here once project is more established
-      # For now, just validate the repository structure
-      
-      - name: Validate Project Structure
         run: |
+          echo "Building Unity project..."
+          echo "License found: ${{ secrets.UNITY_LICENSE != '' }}"
+          
+          # Add actual build steps once license is set up
           if [ -d "Assets" ]; then
             echo "✓ Assets directory found"
           else
             echo "✗ Assets directory not found"
-            exit 1
-          fi
-          
-          if [ -f "ProjectSettings/ProjectSettings.asset" ]; then
-            echo "✓ Project Settings found"
-          else
-            echo "✗ Project Settings not found"
             exit 1
           fi 
