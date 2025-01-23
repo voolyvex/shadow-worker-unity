@@ -16,15 +16,15 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y xvfb
           
-          # Install Unity Hub
-          wget -qO - https://hub.unity3d.com/linux/keys/public | gpg --dearmor | sudo tee /usr/share/keyrings/unity-hub.gpg > /dev/null
-          echo "deb [signed-by=/usr/share/keyrings/unity-hub.gpg] https://hub.unity3d.com/linux/repos/deb stable main" | sudo tee /etc/apt/sources.list.d/unity-hub.list
+          # Install Unity Hub using the updated repository setup
+          sudo sh -c 'echo "deb https://hub.unity3d.com/linux/repos/deb stable main" > /etc/apt/sources.list.d/unityhub.list'
+          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 6E13E740C65960C4
           sudo apt update
-          sudo apt install -y unity-hub
+          sudo apt install -y unityhub
           
           # Install Unity Editor
-          unity-hub -- --headless install-path --set /opt/unity
-          unity-hub -- --headless install 6000.0.34f1
+          unityhub -- --headless install-path --set /opt/unity
+          unityhub -- --headless install 6000.0.34f1
           
           # Create activation file
           xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' \
