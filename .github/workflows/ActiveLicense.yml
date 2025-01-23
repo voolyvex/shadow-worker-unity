@@ -1,55 +1,37 @@
 name: Acquire Unity activation file
-on: workflow_dispatch
+
+on: [push, pull_request]
 
 jobs:
-  activation:
-    name: Request manual activation file 🔑
+  build:
     runs-on: ubuntu-latest
-    steps:
-      # Request manual activation file
-      - name: Request manual activation file
-        id: getManualLicenseFile
-        uses: actions/checkout@v4
-        
-      - name: Request activation file job
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb
-          
-          # Install Unity Hub using the updated repository setup
-          sudo sh -c 'echo "deb https://hub.unity3d.com/linux/repos/deb stable main" > /etc/apt/sources.list.d/unityhub.list'
-          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 6E13E740C65960C4
-          sudo apt update
-          sudo apt install -y unityhub
-          
-          # Install Unity Editor
-          unityhub -- --headless install-path --set /opt/unity
-          unityhub -- --headless install 6000.0.34f1
-          
-          # Create activation file
-          xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' \
-            /opt/unity/Editor/Unity \
-            -batchmode \
-            -nographics \
-            -logFile /dev/stdout \
-            -createManualActivationFile \
-            -quit
-          
-      # Upload artifact (Unity_v20XX.X.XXXX.alf)
-      - name: Upload activation file
-        uses: actions/upload-artifact@v4
-        with:
-          name: Unity_v6000.0.34f1.alf
-          path: Unity_v6000.0.34f1.alf
-          retention-days: 1
 
-      - name: Next steps
-        run: |
-          echo "Manual activation file has been created and uploaded as an artifact."
-          echo "Please follow these steps:"
-          echo "1. Download the Unity_v6000.0.34f1.alf file from the artifacts"
-          echo "2. Visit https://license.unity3d.com/manual"
-          echo "3. Upload the .alf file"
-          echo "4. Download the Unity_v6000.0.34f1.ulf file"
-          echo "5. Create a new repository secret named UNITY_LICENSE"
-          echo "6. Copy the entire contents of the .ulf file into the secret value"
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Unity Hub repository
+      run: |
+        sudo apt-get install -y gnupg
+        sudo mkdir -p /etc/apt/keyrings
+        curl -sS https://packages.unity.com/unityhub.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/unityhub.gpg
+        echo "deb [signed-by=/etc/apt/keyrings/unityhub.gpg] https://hub-dist.unity3d.com/artifactory/hub-debian-prod-local stable main" | sudo tee /etc/apt/sources.list.d/unityhub.list > /dev/null
+        sudo apt update
+
+    - name: Install Unity Hub
+      run: sudo apt install -y unityhub
+
+    - name: Install Unity Editor
+      run: |
+        unityhub -- --headless install-path --set /opt/unity
+        unityhub -- --headless install 2021.1.1f1
+
+    - name: Create activation file
+      run: |
+        xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' \
+        /opt/unity/Editor/Unity \
+        -batchmode \
+        -nographics \
+        -logFile /dev/stdout \
+        -createManualActivationFile \
+        -quit
