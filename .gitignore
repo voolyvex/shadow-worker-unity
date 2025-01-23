@@ -74,26 +74,14 @@ sysinfo.txt
 *.apk
 *.aab
 *.unitypackage
-<<<<<<< HEAD
-*.unitypackage.meta
-=======
->>>>>>> bd68bed (Initial project setup with Unity configuration)
 *.app
 
 # Crashlytics generated file
 crashlytics-build.properties
 
 # Packed Addressables
-<<<<<<< HEAD
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
-=======
-[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
-
-# Temporary auto-generated Android Assets
-[Aa]ssets/[Ss]treamingAssets/aa.meta
-[Aa]ssets/[Ss]treamingAssets/aa/* 
->>>>>>> bd68bed (Initial project setup with Unity configuration)
